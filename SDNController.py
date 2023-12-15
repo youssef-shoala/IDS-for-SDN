@@ -82,11 +82,11 @@ class SDNController(SimpleSwitch13):
         # dst_host_srv_serror_rate 
 
         #self.logger.info('datapath         '
-                        'in-port  eth-dst           '
-                        'out-port packets  bytes')
+        #                'in-port  eth-dst           '
+        #                'out-port packets  bytes')
         #self.logger.info('---------------- '
-                        '-------- ----------------- '
-                        '-------- -------- --------')
+        #                '-------- ----------------- '
+        #                '-------- -------- --------')
         for stat in sorted([flow for flow in body if flow.priority == 1],
                             key=lambda flow: (flow.match['in_port'],
                                             flow.match['eth_dst'])):
@@ -101,11 +101,11 @@ class SDNController(SimpleSwitch13):
         body = ev.msg.body
 
         #self.logger.info('datapath         port     '
-                        'rx-pkts  rx-bytes rx-error '
-                        'tx-pkts  tx-bytes tx-error')
+        #                'rx-pkts  rx-bytes rx-error '
+        #                'tx-pkts  tx-bytes tx-error')
         #self.logger.info('---------------- -------- '
-                        '-------- -------- -------- '
-                        '-------- -------- --------')
+        #                '-------- -------- -------- '
+        #                '-------- -------- --------')
         for stat in sorted(body, key=attrgetter('port_no')):
             #self.logger.info('%016x %8x %8d %8d %8d %8d %8d %8d',
                             ev.msg.datapath.id, stat.port_no,

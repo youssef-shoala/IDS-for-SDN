@@ -1,9 +1,8 @@
-import torch.nn as nn
+import torch.nn as nn 
 import torch.optim as optim
 
-# Model Architecture
-class SimpleDNN(nn.Module):
-    def __init__(self):
+class SimpleDNN(nn.Module): 
+    def __init__(self): 
         super(SimpleDNN, self).__init__()
         self.flatten = nn.Flatten()
         self.dense1 = nn.Linear(12, 64)
@@ -12,7 +11,8 @@ class SimpleDNN(nn.Module):
         self.dropout2 = nn.Dropout(0.5)
         self.dense3 = nn.Linear(32, 1)
 
-    def forward(self, x):
+
+    def forward(self, x): 
         x = self.flatten(x)
         x = torch.sigmoid(self.dense1(x))
         x = self.dropout1(x)
@@ -21,3 +21,10 @@ class SimpleDNN(nn.Module):
         x = self.dense3(x)
         #debugging(x)
         return x
+
+class mytest(): 
+    def __init__(self): 
+        print('u wot m8')
+    def test(): 
+        print('hello world')
+

@@ -9,7 +9,7 @@ from ryu.lib import hub
 import dnn_class
 
 
-class SimpleMonitor13(simple_switch_13.SimpleSwitch13):
+class SDNcontroller(simple_switch_13.SimpleSwitch13):
 
     def __init__(self, *args, **kwargs):
         super(SimpleMonitor13, self).__init__(*args, **kwargs)

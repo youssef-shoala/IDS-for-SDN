@@ -76,7 +76,21 @@ class SimpleSwitch13(app_manager.RyuApp):
 
         self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
 
+        # Features Needed: 
+        # protocol_type
+        # service
+        # flag
+        # count
+        # logged_in 
+        # serror_rate
+        # srv_serrer_rate
+        # same_srv_rate
+        # dst_host_srv_count
+        # dst_host_same_srv_rate
+        # dst_host_serror_rate
+        # dst_host_srv_serror_rate 
         # learn a mac address to avoid FLOOD next time.
+
         self.mac_to_port[dpid][src] = in_port
 
         if dst in self.mac_to_port[dpid]:

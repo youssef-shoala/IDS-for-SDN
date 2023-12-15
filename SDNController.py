@@ -91,10 +91,10 @@ class SDNController(SimpleSwitch13):
                             key=lambda flow: (flow.match['in_port'],
                                             flow.match['eth_dst'])):
             #self.logger.info('%016x %8x %17s %8x %8d %8d',
-                            ev.msg.datapath.id,
-                            stat.match['in_port'], stat.match['eth_dst'],
-                            stat.instructions[0].actions[0].port,
-                            stat.packet_count, stat.byte_count)
+            #                ev.msg.datapath.id,
+            #                stat.match['in_port'], stat.match['eth_dst'],
+            #                stat.instructions[0].actions[0].port,
+            #                stat.packet_count, stat.byte_count)
 
     @set_ev_cls(ofp_event.EventOFPPortStatsReply, MAIN_DISPATCHER)
     def _port_stats_reply_handler(self, ev):
@@ -108,8 +108,8 @@ class SDNController(SimpleSwitch13):
         #                '-------- -------- --------')
         for stat in sorted(body, key=attrgetter('port_no')):
             #self.logger.info('%016x %8x %8d %8d %8d %8d %8d %8d',
-                            ev.msg.datapath.id, stat.port_no,
-                            stat.rx_packets, stat.rx_bytes, stat.rx_errors,
-                            stat.tx_packets, stat.tx_bytes, stat.tx_errors)
+            #                ev.msg.datapath.id, stat.port_no,
+            #                stat.rx_packets, stat.rx_bytes, stat.rx_errors,
+            #                stat.tx_packets, stat.tx_bytes, stat.tx_errors)
 
 

@@ -149,8 +149,7 @@ class SimpleSwitch13(app_manager.RyuApp):
 
                     match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP,
                                                 ipv4_src=srcip, ipv4_dst=dstip,
-                                                ip_proto=protocol,
-                                                udp_src=t.src_port, udp_dst=t.dst_port,)
+                                                ip_proto=protocol)
 
                     self.logger.debug(match)
 

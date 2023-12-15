@@ -59,8 +59,10 @@ class SDNController(SimpleSwitch13):
     @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
     def _flow_stats_reply_handler(self, ev):
         body = ev.msg.body
-        #print('new flow stats body: ')
-        #print(body)
+        print('new FLOW stats reply msg body: ')
+        print('===============================================================')
+        print(body)
+        print('===============================================================')
 
 
 
@@ -98,6 +100,11 @@ class SDNController(SimpleSwitch13):
     @set_ev_cls(ofp_event.EventOFPPortStatsReply, MAIN_DISPATCHER)
     def _port_stats_reply_handler(self, ev):
         body = ev.msg.body
+        print('new PORT stats reply msg body: ')
+        print('')
+        print('===============================================================')
+        print(body)
+        print('===============================================================')
 
         #self.logger.info('datapath         port     '
         #                'rx-pkts  rx-bytes rx-error '

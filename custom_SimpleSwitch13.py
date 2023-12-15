@@ -151,7 +151,8 @@ class SimpleSwitch13(app_manager.RyuApp):
                                                 ipv4_src=srcip, ipv4_dst=dstip,
                                                 ip_proto=protocol)
 
-                    self.logger.debug(match)
+                    #self.logger.debug(match)
+                    #print(match)
 
                     # verify if we have a valid buffer_id, if yes avoid to send both
                     # flow_mod & packet_out

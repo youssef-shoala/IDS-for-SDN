@@ -90,6 +90,7 @@ class SDNController(SimpleSwitch13):
         for stat in sorted([flow for flow in body if flow.priority == 1],
                             key=lambda flow: (flow.match['in_port'],
                                             flow.match['eth_dst'])):
+            pass
             #self.logger.info('%016x %8x %17s %8x %8d %8d',
             #                ev.msg.datapath.id,
             #                stat.match['in_port'], stat.match['eth_dst'],
@@ -107,6 +108,7 @@ class SDNController(SimpleSwitch13):
         #                '-------- -------- -------- '
         #                '-------- -------- --------')
         for stat in sorted(body, key=attrgetter('port_no')):
+            pass
             #self.logger.info('%016x %8x %8d %8d %8d %8d %8d %8d',
             #                ev.msg.datapath.id, stat.port_no,
             #                stat.rx_packets, stat.rx_bytes, stat.rx_errors,

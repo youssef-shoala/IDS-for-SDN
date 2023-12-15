@@ -37,11 +37,11 @@ class SDNController(SimpleSwitch13):
         datapath = ev.datapath
         if ev.state == MAIN_DISPATCHER:
             if datapath.id not in self.datapaths:
-                self.logger.debug('register datapath: %016x', datapath.id)
+                #self.logger.debug('register datapath: %016x', datapath.id)
                 self.datapaths[datapath.id] = datapath
         elif ev.state == DEAD_DISPATCHER:
             if datapath.id in self.datapaths:
-                self.logger.debug('unregister datapath: %016x', datapath.id)
+                #self.logger.debug('unregister datapath: %016x', datapath.id)
                 del self.datapaths[datapath.id]
 
     def _monitor(self):
@@ -49,10 +49,9 @@ class SDNController(SimpleSwitch13):
             for dp in self.datapaths.values():
                 self._request_stats(dp)
             hub.sleep(10)
-            self.logger.debug('model: ', self.model)
 
     def _request_stats(self, datapath):
-        self.logger.debug('send stats request: %016x', datapath.id)
+        #self.logger.debug('send stats request: %016x', datapath.id)
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
 
@@ -82,16 +81,16 @@ class SDNController(SimpleSwitch13):
         # dst_host_serror_rate
         # dst_host_srv_serror_rate 
 
-        self.logger.info('datapath         '
+        #self.logger.info('datapath         '
                         'in-port  eth-dst           '
                         'out-port packets  bytes')
-        self.logger.info('---------------- '
+        #self.logger.info('---------------- '
                         '-------- ----------------- '
                         '-------- -------- --------')
         for stat in sorted([flow for flow in body if flow.priority == 1],
                             key=lambda flow: (flow.match['in_port'],
                                             flow.match['eth_dst'])):
-            self.logger.info('%016x %8x %17s %8x %8d %8d',
+            #self.logger.info('%016x %8x %17s %8x %8d %8d',
                             ev.msg.datapath.id,
                             stat.match['in_port'], stat.match['eth_dst'],
                             stat.instructions[0].actions[0].port,
@@ -101,14 +100,14 @@ class SDNController(SimpleSwitch13):
     def _port_stats_reply_handler(self, ev):
         body = ev.msg.body
 
-        self.logger.info('datapath         port     '
+        #self.logger.info('datapath         port     '
                         'rx-pkts  rx-bytes rx-error '
                         'tx-pkts  tx-bytes tx-error')
-        self.logger.info('---------------- -------- '
+        #self.logger.info('---------------- -------- '
                         '-------- -------- -------- '
                         '-------- -------- --------')
         for stat in sorted(body, key=attrgetter('port_no')):
-            self.logger.info('%016x %8x %8d %8d %8d %8d %8d %8d',
+            #self.logger.info('%016x %8x %8d %8d %8d %8d %8d %8d',
                             ev.msg.datapath.id, stat.port_no,
                             stat.rx_packets, stat.rx_bytes, stat.rx_errors,
                             stat.tx_packets, stat.tx_bytes, stat.tx_errors)

@@ -18,16 +18,11 @@ class SDNController(SimpleSwitch13):
         self.datapaths = {}
         self.monitor_thread = hub.spawn(self._monitor)
 
-        #test=mytest.mytest()
-        #print(type(test))
-        
-        #model = mytest.SimpleDNN()
-        #print(type(model))
-        
         self.model = SimpleDNN()
         self.model.load_state_dict(torch.load('dnn_discriminator_real_data'))
         self.model.eval()
         self.logger.debug('model loaded', self.model)
+        print('print statement')
 
 
 
@@ -67,6 +62,8 @@ class SDNController(SimpleSwitch13):
         #print('new flow stats body: ')
         #print(body)
 
+
+
         # Features Needed: 
         # protocol_type
         # service
@@ -81,21 +78,22 @@ class SDNController(SimpleSwitch13):
         # dst_host_serror_rate
         # dst_host_srv_serror_rate 
 
+
+
         #self.logger.info('datapath         '
         #                'in-port  eth-dst           '
         #                'out-port packets  bytes')
         #self.logger.info('---------------- '
         #                '-------- ----------------- '
         #                '-------- -------- --------')
-        for stat in sorted([flow for flow in body if flow.priority == 1],
-                            key=lambda flow: (flow.match['in_port'],
-                                            flow.match['eth_dst'])):
-            pass
-            #self.logger.info('%016x %8x %17s %8x %8d %8d',
-            #                ev.msg.datapath.id,
-            #                stat.match['in_port'], stat.match['eth_dst'],
-            #                stat.instructions[0].actions[0].port,
-            #                stat.packet_count, stat.byte_count)
+        #for stat in sorted([flow for flow in body if flow.priority == 1],
+        #                    key=lambda flow: (flow.match['in_port'],
+        #                                    flow.match['eth_dst'])):
+        #    self.logger.info('%016x %8x %17s %8x %8d %8d',
+        #                    ev.msg.datapath.id,
+        #                    stat.match['in_port'], stat.match['eth_dst'],
+        #                    stat.instructions[0].actions[0].port,
+        #                    stat.packet_count, stat.byte_count)
 
     @set_ev_cls(ofp_event.EventOFPPortStatsReply, MAIN_DISPATCHER)
     def _port_stats_reply_handler(self, ev):
@@ -107,11 +105,10 @@ class SDNController(SimpleSwitch13):
         #self.logger.info('---------------- -------- '
         #                '-------- -------- -------- '
         #                '-------- -------- --------')
-        for stat in sorted(body, key=attrgetter('port_no')):
-            pass
-            #self.logger.info('%016x %8x %8d %8d %8d %8d %8d %8d',
-            #                ev.msg.datapath.id, stat.port_no,
-            #                stat.rx_packets, stat.rx_bytes, stat.rx_errors,
-            #                stat.tx_packets, stat.tx_bytes, stat.tx_errors)
+        #for stat in sorted(body, key=attrgetter('port_no')):
+        #    self.logger.info('%016x %8x %8d %8d %8d %8d %8d %8d',
+        #                    ev.msg.datapath.id, stat.port_no,
+        #                    stat.rx_packets, stat.rx_bytes, stat.rx_errors,
+        #                    stat.tx_packets, stat.tx_bytes, stat.tx_errors)
 
 

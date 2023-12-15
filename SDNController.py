@@ -7,10 +7,11 @@ from ryu.controller.handler import set_ev_cls
 from ryu.lib import hub
 
 #import mytest
+from custom_SimpleSwitch13 import SimpleSwitch13
 from dnn_class import SimpleDNN
 import torch
 
-class SDNController(simple_switch_13.SimpleSwitch13):
+class SDNController(SimpleSwitch13):
 
     def __init__(self, *args, **kwargs):
         super(SDNController, self).__init__(*args, **kwargs)

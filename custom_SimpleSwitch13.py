@@ -159,7 +159,7 @@ class SimpleSwitch13(app_manager.RyuApp):
                         self.add_flow(datapath, 1, match, actions, msg.buffer_id, idle=20, hard=100)
                         return
                     else:
-                        self.add_flow(datapath, 1, match, actions, idle=20, hard=100)
+                        self.add_flow(datapath, 1, match, actions)
 
 
         data = None

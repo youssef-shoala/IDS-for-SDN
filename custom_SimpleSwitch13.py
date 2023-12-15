@@ -56,6 +56,7 @@ class SimpleSwitch13(app_manager.RyuApp):
         if ev.msg.msg_len < ev.msg.total_len:
             self.logger.debug("packet truncated: only %s of %s bytes",
                             ev.msg.msg_len, ev.msg.total_len)
+
         msg = ev.msg
         datapath = msg.datapath
         ofproto = datapath.ofproto
@@ -90,6 +91,8 @@ class SimpleSwitch13(app_manager.RyuApp):
         # dst_host_serror_rate
         # dst_host_srv_serror_rate 
         # learn a mac address to avoid FLOOD next time.
+
+
 
         self.mac_to_port[dpid][src] = in_port
 

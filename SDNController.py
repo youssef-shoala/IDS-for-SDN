@@ -61,10 +61,10 @@ class SDNController(SimpleSwitch13):
         body = ev.msg.body
         print('Packet IN RECIEVED: ')
         print('===============================================================')
-        #print(body)
-        print(type(ev))
-        print((ev.msg))
-        print((ev.msg.body))
+        print(body)
+        #print(type(ev))
+        #print((ev.msg))
+        #print((ev.msg.body))
         print('===============================================================')
 
 

@@ -60,10 +60,7 @@ class SimpleSwitch13(app_manager.RyuApp):
 
         print('Packet Table MISS: ')
         print('===============================================================')
-        #print(body)
-        print(type(ev))
-        print((ev.msg))
-        print((ev.msg.body))
+        print(f'Ethernet msg from packet of type {type(eth)}: {eth}')
         print('===============================================================')
 
 
@@ -97,6 +94,7 @@ class SimpleSwitch13(app_manager.RyuApp):
         class_dict = {'normal': 0, 'neptune': 1, 'warezclient': 1, 'ipsweep': 1, 'portsweep': 1, 'teardrop': 1, 'nmap': 1, 'satan': 1, 'smurf': 1, 'pod': 1, 'back': 1, 'guess_passwd': 1, 'ftp_write': 1, 'multihop': 1, 'rootkit': 1, 'buffer_overflow': 1, 'imap': 1, 'warezmaster': 1, 'phf': 1, 'land': 1, 'loadmodule': 1, 'spy': 1, 'perl': 1}
 
 
+
         msg = ev.msg
         datapath = msg.datapath
         ofproto = datapath.ofproto
@@ -113,11 +111,11 @@ class SimpleSwitch13(app_manager.RyuApp):
         src = eth.src
         dpid = format(datapath.id, "d").zfill(16)
 
-        # update counters and other self vars
+        # FLOOD update
         self.mac_to_port.setdefault(dpid, {})
         self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
 
-            # learn a mac address to avoid FLOOD next time.
+            # learn a mac address to avoid FLOOD next time and set out port
         self.mac_to_port[dpid][src] = in_port
         if dst in self.mac_to_port[dpid]:
             out_port = self.mac_to_port[dpid][dst]
@@ -131,7 +129,15 @@ class SimpleSwitch13(app_manager.RyuApp):
         if out_port != ofproto.OFPP_FLOOD:
 
             # configure packet in 
-            if ethertype:
+            if eth.ethertype == ether_types.ETH_TYPE_IP:
+                ip = pkt.get_protocol(ipv4.ipv4)
+                srcip = ip.src
+                dstip = ip.dst
+                protocol = ip.proto
+
+                if protocol == in_proto.IPPROTO_ICMP:
+                    match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP)
+
                 match = parser.OFPMatch(in_port=in_port, eth_dst=dst, eth_src=src)
 
 

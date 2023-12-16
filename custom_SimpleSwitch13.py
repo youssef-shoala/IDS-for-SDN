@@ -58,12 +58,6 @@ class SimpleSwitch13(app_manager.RyuApp):
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
 
-        print('Packet Table MISS: ')
-        print('===============================================================')
-        print(f'Ethernet msg from packet of type {type(eth)}: {eth}')
-        print('===============================================================')
-
-
 
         # If you hit this you might want to increase
         # the "miss_send_length" of your switch
@@ -103,6 +97,15 @@ class SimpleSwitch13(app_manager.RyuApp):
         pkt = packet.Packet(msg.data)
         eth = pkt.get_protocols(ethernet.ethernet)[0]
 
+
+
+        #print('Packet Table MISS: ')
+        #print('===============================================================')
+        #print(f'Ethernet msg from packet of type {type(eth)}: {eth}')
+        #print('===---===')
+
+
+
             # ignore lldp packet
         if eth.ethertype == ether_types.ETH_TYPE_LLDP:
             return
@@ -113,7 +116,8 @@ class SimpleSwitch13(app_manager.RyuApp):
 
         # FLOOD update
         self.mac_to_port.setdefault(dpid, {})
-        self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+        #self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+        #print('===---===')
 
             # learn a mac address to avoid FLOOD next time and set out port
         self.mac_to_port[dpid][src] = in_port
@@ -134,11 +138,21 @@ class SimpleSwitch13(app_manager.RyuApp):
                 srcip = ip.src
                 dstip = ip.dst
                 protocol = ip.proto
+                
+                #print(f'msg: {pkt}')
+                #print('===---===')
 
                 if protocol == in_proto.IPPROTO_ICMP:
+                    print(f'msg protocol: {protocol}=={in_proto.IPPROTO_ICMP}')
                     match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP)
-
-                match = parser.OFPMatch(in_port=in_port, eth_dst=dst, eth_src=src)
+                elif protocol == in_proto.IPPROTO_TCP: 
+                    print(f'msg protocol: {protocol}=={in_proto.IPPROTO_TCP}')
+                    match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP)
+                elif protocol == in_proto.IPPROTO_UDP: 
+                    print(f'msg protocol: {protocol}=={in_proto.IPPROTO_UDP}')
+                    match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP)
+                else:
+                    match = parser.OFPMatch(in_port=in_port, eth_dst=dst, eth_src=src)
 
 
             # verify if we have a valid buffer_id, if yes avoid to send both
@@ -158,8 +172,8 @@ class SimpleSwitch13(app_manager.RyuApp):
                                 in_port=in_port, actions=actions, data=data)
         datapath.send_msg(out)
 
-        print('Packet IN SENDING: ')
-        print('===============================================================')
-        print(out)
-        print('===============================================================')
+        #print('Packet created flow with following datapath and actions: ')
+        #print('==============================================================')
+        #print(datapath, msg.buffer_id, in_port, actions, data)
+        #print('==============================================================')
 

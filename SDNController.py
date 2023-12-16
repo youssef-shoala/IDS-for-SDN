@@ -60,12 +60,13 @@ class SDNController(SimpleSwitch13):
     def _flow_stats_reply_handler(self, ev):
         body = ev.msg.body
         print('Packet IN RECIEVED: ')
-        print('===============================================================')
-        print(body)
+        #print('==============================================================')
+        print((ev.msg.body))
+        #print(body)
         #print(type(ev))
         #print((ev.msg))
         #print((ev.msg.body))
-        print('===============================================================')
+        #print('==============================================================')
 
 
         # Features Needed: 
@@ -94,8 +95,9 @@ class SDNController(SimpleSwitch13):
         if pkt_is_attack: 
             print(f'ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED')
         else:
-            print(f'Benign Traffic')
-        print('===============================================================')
+            pass
+            #print(f'Benign Traffic')
+        #print('===============================================================')
 
 
 
@@ -149,5 +151,3 @@ class SDNController(SimpleSwitch13):
 #        #                    ev.msg.datapath.id, stat.port_no,
 #        #                    stat.rx_packets, stat.rx_bytes, stat.rx_errors,
 #        #                    stat.tx_packets, stat.tx_bytes, stat.tx_errors)
-
-

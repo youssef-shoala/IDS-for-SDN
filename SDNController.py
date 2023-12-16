@@ -91,11 +91,11 @@ class SDNController(SimpleSwitch13):
         # Get data from msg
 
         for stat in [flow for flow in body]: 
-            try: 
+            if stat.match['ip_proto']: 
                 ip_proto = stat.match['ip_proto']
                 print('Controller deciding on flow: ')
                 print(f'protocol: {ip_proto}')
-            except: 
+            else: 
                 print('message not in ip_proto')
                 continue
             flag = stat.flags

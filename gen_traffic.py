@@ -117,36 +117,26 @@ def startNetwork():
     hosts = [h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, h15, h16, h17, h18]    
     print("--------------------------------------------------------------------------------")    
     print("Generating traffic ...")    
+
+    # set up host 1 as webserver tcp and udp
     h1.cmd('cd /home/mininet/webserver')
     h1.cmd('python -m SimpleHTTPServer 80 &')
     h1.cmd('iperf -s -p 5050 &')
     h1.cmd('iperf -s -u -p 5051 &')
-    print('h1 set up as simple HTTP server')
     sleep(2)
-    for h in hosts:
-        h.cmd('cd /home/mininet/Downloads')
-    for i in range(1):
-        
-        print("--------------------------------------------------------------------------------")    
-        print("Iteration n {} ...".format(i+1))
-        print("--------------------------------------------------------------------------------") 
-        
-        for j in range(1):
-            src = choice(hosts)
-            dst = ip_generator()
-            
-            print("generating ICMP traffic between %s and h%s and TCP/UDP traffic between %s and h1" % (src,((dst.split('.'))[3]),src))
-            src.cmd("ping {} -c 1 &".format(dst))
-            src.cmd("iperf -p 5050 10.0.0.1")
-            src.cmd("iperf -p 5051 -u 10.0.0.1")
-            
-            #print("%s Downloading index.html from h1" % src)
-            #src.cmd("wget http://10.0.0.1/index.html")
-            #print("%s Downloading test.zip from h1" % src)
-            #src.cmd("wget http://10.0.0.1/test.zip")
-        
-        h1.cmd("rm -f *.* /home/mininet/Downloads")
-        
+
+    for i in range(10): 
+        print('round 1: \n')
+        src = choice(hosts)
+
+        #send an icmp packet to 10.0.0.3 ever round
+        dst = 10.0.0.3
+        src.cmd("ping {} -c 100 &".format(dst))
+
+        #send tcp and udp to h1
+        h1.cmd('iperf -s -p 5050 10.0.0.1')
+        h1.cmd('iperf -s -u -p 5050 10.0.0.1')
+
     print("--------------------------------------------------------------------------------")  
     
     # CLI(net)

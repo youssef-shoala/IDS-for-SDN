@@ -97,9 +97,10 @@ class SimpleSwitch13(app_manager.RyuApp):
         dst = eth.dst
         src = eth.src
         dpid = format(datapath.id, "d").zfill(16)
+        self.mac_to_port.setdefault(dpid, {})
 
         #self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
-        out_port = dst
+        out_port = msg.match['out_port']
 
         # define OFP actions
         actions = [parser.OFPActionOutput(out_port)]

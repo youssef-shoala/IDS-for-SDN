@@ -102,8 +102,7 @@ class SimpleSwitch13(app_manager.RyuApp):
         self.mac_to_port.setdefault(dpid, {})
         #self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
 
-            # learn a mac address to avoid FLOOD next time and set out port
-        self.mac_to_port[dpid][src] = in_port
+        # learn a mac address to avoid FLOOD next time and set out port
         if dst in self.mac_to_port[dpid]:
             out_port = self.mac_to_port[dpid][dst]
         else:

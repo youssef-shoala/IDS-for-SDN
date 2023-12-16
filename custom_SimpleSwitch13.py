@@ -99,7 +99,7 @@ class SimpleSwitch13(app_manager.RyuApp):
         dpid = format(datapath.id, "d").zfill(16)
 
         #self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
-
+        out_port = dst
 
         # define OFP actions
         actions = [parser.OFPActionOutput(out_port)]

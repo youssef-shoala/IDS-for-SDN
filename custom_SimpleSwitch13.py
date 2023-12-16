@@ -150,19 +150,16 @@ class SimpleSwitch13(app_manager.RyuApp):
         priority = 1.0
         if msg.buffer_id != ofproto.OFP_NO_BUFFER:
             self.add_flow(datapath, priority, match, actions, msg.buffer_id)
+            data = None
+            if msg.buffer_id == ofproto.OFP_NO_BUFFER:
+                data = msg.data
+
+            # send packet_in msg to controller
+            out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
+                                    in_port=in_port, actions=actions, data=data)
+            datapath.send_msg(out)
             return
-        else:
-            self.add_flow(datapath, priority, match, actions)
-
-        data = None
-        if msg.buffer_id == ofproto.OFP_NO_BUFFER:
-            data = msg.data
-
-        # send packet_in msg to controller
-        out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
-                                in_port=in_port, actions=actions, data=data)
-        datapath.send_msg(out)
-
+        
         #print(f'Packet with dpid {dpid} Created New Flow')
         #print('==============================================================')
         #print(datapath, msg.buffer_id, in_port, actions, data)

@@ -130,7 +130,7 @@ def startNetwork():
         src = choice(hosts)
 
         #send an icmp packet to 10.0.0.3 ever round
-        dst = 10.0.0.3
+        dst = '10.0.0.3'
         src.cmd("ping {} -c 100 &".format(dst))
 
         #send tcp and udp to h1

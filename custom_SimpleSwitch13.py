@@ -82,10 +82,6 @@ class SimpleSwitch13(app_manager.RyuApp):
         # dst_host_same_srv_rate
         # dst_host_serror_rate
         # dst_host_srv_serror_rate 
-        # classes
-        class_dict = {'normal': 0, 'neptune': 1, 'warezclient': 1, 'ipsweep': 1, 'portsweep': 1, 'teardrop': 1, 'nmap': 1, 'satan': 1, 'smurf': 1, 'pod': 1, 'back': 1, 'guess_passwd': 1, 'ftp_write': 1, 'multihop': 1, 'rootkit': 1, 'buffer_overflow': 1, 'imap': 1, 'warezmaster': 1, 'phf': 1, 'land': 1, 'loadmodule': 1, 'spy': 1, 'perl': 1}
-
-
 
         msg = ev.msg
         datapath = msg.datapath
@@ -94,7 +90,6 @@ class SimpleSwitch13(app_manager.RyuApp):
         in_port = msg.match['in_port']
         pkt = packet.Packet(msg.data)
         eth = pkt.get_protocols(ethernet.ethernet)[0]
-
             # ignore lldp packet
         if eth.ethertype == ether_types.ETH_TYPE_LLDP:
             return
@@ -113,6 +108,7 @@ class SimpleSwitch13(app_manager.RyuApp):
             out_port = self.mac_to_port[dpid][dst]
         else:
             out_port = ofproto.OFPP_FLOOD
+            print('flood packet detected')
 
         # define OFP actions
         actions = [parser.OFPActionOutput(out_port)]
@@ -122,8 +118,8 @@ class SimpleSwitch13(app_manager.RyuApp):
 
             # configure packet in 
             if eth.ethertype == ether_types.ETH_TYPE_IP:
-                print('packet in switch')
- 
+                print('ip packet in switch')
+
                 ip = pkt.get_protocol(ipv4.ipv4)
                 srcip = ip.src
                 dstip = ip.dst
@@ -138,11 +134,9 @@ class SimpleSwitch13(app_manager.RyuApp):
                 elif protocol == in_proto.IPPROTO_TCP: 
                     print(f'msg protocol tcp: {protocol}=={in_proto.IPPROTO_TCP}')
                     tcp_metadata = pkt.get_protocol(tcp.tcp)
-                    tcp_curr_flag = 's0'
                     match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP,
                                             tcp_src=tcp_metadata.src_port, 
                                             tcp_dst=tcp_metadata.dst_port) 
-                                            #tcp_flag=tcp_curr_flag)
 
                 elif protocol == in_proto.IPPROTO_UDP: 
                     print(f'msg protocol udp: {protocol}=={in_proto.IPPROTO_UDP}')
@@ -163,14 +157,14 @@ class SimpleSwitch13(app_manager.RyuApp):
             else:
                 self.add_flow(datapath, 1, match, actions)
 
-        data = None
-        if msg.buffer_id == ofproto.OFP_NO_BUFFER:
-            data = msg.data
+            data = None
+            if msg.buffer_id == ofproto.OFP_NO_BUFFER:
+                data = msg.data
 
-        # send packet_in msg to controller
-        out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
-                                in_port=in_port, actions=actions, data=data)
-        datapath.send_msg(out)
+            # send packet_in msg to controller
+            out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
+                                    in_port=in_port, actions=actions, data=data)
+            datapath.send_msg(out)
 
         #print(f'Packet with dpid {dpid} Created New Flow')
         #print('==============================================================')

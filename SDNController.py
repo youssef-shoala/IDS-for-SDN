@@ -59,7 +59,6 @@ class SDNController(SimpleSwitch13):
     @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
     def _flow_stats_reply_handler(self, ev):
         body = ev.msg.body
-        #print('Controller deciding on flow: ')
 
         # Features Needed: 
         # protocol_type
@@ -94,8 +93,8 @@ class SDNController(SimpleSwitch13):
         for stat in [flow for flow in body]: 
             try: 
                 ip_proto = stat.match['ip_proto']
-                print(f'protocol: {ip_proto}')
                 print('Controller deciding on flow: ')
+                print(f'protocol: {ip_proto}')
             except: 
                 print('message not in ip_proto')
                 continue

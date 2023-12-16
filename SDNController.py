@@ -92,7 +92,7 @@ class SDNController(SimpleSwitch13):
 
         for stat in [flow for flow in body]: 
             if 'ip_proto' in state.match: 
-                ip_proto = stat.match['ip_proto']
+                ip_proto = state.match['ip_proto']
                 print('Controller deciding on flow: ')
                 print(f'protocol: {ip_proto}')
             else: 

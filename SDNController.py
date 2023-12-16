@@ -59,15 +59,7 @@ class SDNController(SimpleSwitch13):
     @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
     def _flow_stats_reply_handler(self, ev):
         body = ev.msg.body
-        print('Packet IN RECIEVED: ')
-        #print('==============================================================')
-        print((ev.msg.body))
-        #print(body)
-        #print(type(ev))
-        #print((ev.msg))
-        #print((ev.msg.body))
-        #print('==============================================================')
-
+        #print('Controller deciding on flow: ')
 
         # Features Needed: 
         # protocol_type
@@ -77,26 +69,101 @@ class SDNController(SimpleSwitch13):
         # flag
         flag_dict = {'SF': 0, 'S0': 1, 'REJ': 2, 'RSTR': 3, 'SH': 4, 'RSTO': 5, 'S1': 6, 'RSTOS0': 7, 'S3': 8, 'S2': 9, 'OTH': 10}
         # count
+        count = 0
         # logged_in 
+        logged_in = 0
         # serror_rate
-        # srv_serrer_rate
+        total_syn = 0
+        syn_errors = 0
+        serror_rate = 0
+        # srv_serror_rate
+        srv_serror_rate = 0
         # same_srv_rate
+        same_srv_rate = 0
         # dst_host_srv_count
+        dst_host_srv_count = 0
         # dst_host_same_srv_rate
+        dst_host_same_srv_rate = 0
         # dst_host_serror_rate
+        dst_host_serror_rate = 0
         # dst_host_srv_serror_rate 
-        # classes
-        class_dict = {'normal': 0, 'neptune': 1, 'warezclient': 1, 'ipsweep': 1, 'portsweep': 1, 'teardrop': 1, 'nmap': 1, 'satan': 1, 'smurf': 1, 'pod': 1, 'back': 1, 'guess_passwd': 1, 'ftp_write': 1, 'multihop': 1, 'rootkit': 1, 'buffer_overflow': 1, 'imap': 1, 'warezmaster': 1, 'phf': 1, 'land': 1, 'loadmodule': 1, 'spy': 1, 'perl': 1}
+        dst_host_serror_rate = 0
 
-        # Get data from packet_in msg
-        # Get rest of data from controller vars
-        # Predict pkt class based on above data
-        pkt_is_attack = False
-        if pkt_is_attack: 
-            print(f'ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED')
-        else:
-            pass
-            #print(f'Benign Traffic')
+        # Get data from msg
+
+        for stat in [flow for flow in body]: 
+            try: 
+                ip_proto = stat.match['ip_proto']
+                print(f'protocol: {ip_proto}')
+                print('Controller deciding on flow: ')
+            except: 
+                print('message not in ip_proto')
+                continue
+            flag = stat.flags
+            count += 1
+
+
+            if stat.match['ip_proto'] == 1: 
+                #icmp
+                protocol = protocol_dict['icmp']
+                service = service_dict['other']
+
+            elif stat.match['ip_proto'] == 6: 
+                #tcp
+                protocol = protocol_dict['tcp']
+                x = stat.match['tcp_src']
+                y = stat.match['tcp_dst']
+                print(y)
+                service_dict = {22:'ssh'}
+                service = service_dict[y]
+
+            elif stat.match['ip_proto'] == 17: 
+                #udp
+                protocol = protocol_dict['udp']
+                x = stat.match['udp_src']
+                y = stat.match['udp_dst']
+                print(y)
+                service_dict = {22:'ssh'}
+                service = service_dict[y]
+
+            # Get rest of data from controller vars
+
+            #try: 
+            #    pkt_count_per_sec = stat.packet_count/stat.duration_sec
+            #except:
+            #    pkt_count_per_sec = 0
+
+            #try: 
+            #    #stat.byte_count
+            #    pass
+            #except:
+            #    pass
+
+            # Predict pkt class based on above data
+            pkt_is_attack = False
+
+            model_input = torch.zeros(1,12,dtype=torch.double)
+            # protocol, service, flag, 
+            model_input[0,0] = protocol
+            model_input[0,1] = service
+            model_input[0,2] = flag
+            model_input[0,3] = count
+            model_input[0,4] = logged_in
+            model_input[0,5] = serror_rate
+            model_input[0,6] = srv_serror_rate
+            model_input[0,7] = same_srv_rate
+            model_input[0,8] = dst_host_srv_count
+            model_input[0,9] = dst_host_same_srv_rate
+            model_input[0,10] = dst_host_serror_rate 
+            model_input[0,11] = dst_host_serror_rate
+
+            if (self.model(model_input.float())>.02):
+                pkt_is_attack = True
+
+            if pkt_is_attack: 
+                print(f'ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED   ATTACK DETECTED')
+            else:
+                print(f'Benign Traffic')
         #print('===============================================================')
 
 

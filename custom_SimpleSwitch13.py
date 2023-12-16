@@ -66,8 +66,6 @@ class SimpleSwitch13(app_manager.RyuApp):
                             ev.msg.msg_len, ev.msg.total_len)
 
         # get msg data
-
-
         # Features Needed: 
         # protocol_type
         protocol_dict = {'tcp': 0, 'udp': 1, 'icmp': 2} 
@@ -97,15 +95,6 @@ class SimpleSwitch13(app_manager.RyuApp):
         pkt = packet.Packet(msg.data)
         eth = pkt.get_protocols(ethernet.ethernet)[0]
 
-
-
-        #print('Packet Table MISS: ')
-        #print('===============================================================')
-        #print(f'Ethernet msg from packet of type {type(eth)}: {eth}')
-        #print('===---===')
-
-
-
             # ignore lldp packet
         if eth.ethertype == ether_types.ETH_TYPE_LLDP:
             return
@@ -117,7 +106,6 @@ class SimpleSwitch13(app_manager.RyuApp):
         # FLOOD update
         self.mac_to_port.setdefault(dpid, {})
         #self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
-        #print('===---===')
 
             # learn a mac address to avoid FLOOD next time and set out port
         self.mac_to_port[dpid][src] = in_port
@@ -134,26 +122,38 @@ class SimpleSwitch13(app_manager.RyuApp):
 
             # configure packet in 
             if eth.ethertype == ether_types.ETH_TYPE_IP:
+                print('packet in switch')
+ 
                 ip = pkt.get_protocol(ipv4.ipv4)
                 srcip = ip.src
                 dstip = ip.dst
                 protocol = ip.proto
-                
-                #print(f'msg: {pkt}')
-                #print('===---===')
+                flags = ip.flags
 
                 if protocol == in_proto.IPPROTO_ICMP:
-                    print(f'msg protocol: {protocol}=={in_proto.IPPROTO_ICMP}')
-                    match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP)
-                elif protocol == in_proto.IPPROTO_TCP: 
-                    print(f'msg protocol: {protocol}=={in_proto.IPPROTO_TCP}')
-                    match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP)
-                elif protocol == in_proto.IPPROTO_UDP: 
-                    print(f'msg protocol: {protocol}=={in_proto.IPPROTO_UDP}')
-                    match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP)
-                else:
-                    match = parser.OFPMatch(in_port=in_port, eth_dst=dst, eth_src=src)
+                    print(f'msg protocol icmp: {protocol}=={in_proto.IPPROTO_ICMP}')
+                    match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP, 
+                                            ip_proto=protocol) 
 
+                elif protocol == in_proto.IPPROTO_TCP: 
+                    print(f'msg protocol tcp: {protocol}=={in_proto.IPPROTO_TCP}')
+                    tcp_metadata = pkt.get_protocol(tcp.tcp)
+                    tcp_curr_flag = 's0'
+                    match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP,
+                                            tcp_src=tcp_metadata.src_port, 
+                                            tcp_dst=tcp_metadata.dst_port) 
+                                            #tcp_flag=tcp_curr_flag)
+
+                elif protocol == in_proto.IPPROTO_UDP: 
+                    print(f'msg protocol udp: {protocol}=={in_proto.IPPROTO_UDP}')
+                    udp_metadata = pkt.get_protocol(udp.udp)
+                    match = parser.OFPMatch(eth_type=ether_types.ETH_TYPE_IP,
+                                            ip_proto=protocol,
+                                            udp_src=udp_metadata.src_port, 
+                                            udp_dst=udp_metadata.dst_port)
+
+            else:
+                match = parser.OFPMatch(in_port=in_port, eth_dst=dst, eth_src=src)
 
             # verify if we have a valid buffer_id, if yes avoid to send both
             # flow_mod & packet_out
@@ -172,7 +172,7 @@ class SimpleSwitch13(app_manager.RyuApp):
                                 in_port=in_port, actions=actions, data=data)
         datapath.send_msg(out)
 
-        #print('Packet created flow with following datapath and actions: ')
+        #print(f'Packet with dpid {dpid} Created New Flow')
         #print('==============================================================')
         #print(datapath, msg.buffer_id, in_port, actions, data)
         #print('==============================================================')

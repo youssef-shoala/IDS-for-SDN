@@ -121,34 +121,29 @@ def startNetwork():
     h1.cmd('python -m SimpleHTTPServer 80 &')
     h1.cmd('iperf -s -p 5050 &')
     h1.cmd('iperf -s -u -p 5051 &')
+    print('h1 set up as simple HTTP server')
     sleep(2)
     for h in hosts:
         h.cmd('cd /home/mininet/Downloads')
-    for i in range(600):
+    for i in range(1):
         
         print("--------------------------------------------------------------------------------")    
         print("Iteration n {} ...".format(i+1))
         print("--------------------------------------------------------------------------------") 
         
-        for j in range(10):
+        for j in range(1):
             src = choice(hosts)
             dst = ip_generator()
             
-            if j <9:
-                print("generating ICMP traffic between %s and h%s and TCP/UDP traffic between %s and h1" % (src,((dst.split('.'))[3]),src))
-                src.cmd("ping {} -c 100 &".format(dst))
-                src.cmd("iperf -p 5050 -c 10.0.0.1")
-                src.cmd("iperf -p 5051 -u -c 10.0.0.1")
-            else:
-                print("generating ICMP traffic between %s and h%s and TCP/UDP traffic between %s and h1" % (src,((dst.split('.'))[3]),src))
-                src.cmd("ping {} -c 100".format(dst))
-                src.cmd("iperf -p 5050 -c 10.0.0.1")
-                src.cmd("iperf -p 5051 -u -c 10.0.0.1")
+            print("generating ICMP traffic between %s and h%s and TCP/UDP traffic between %s and h1" % (src,((dst.split('.'))[3]),src))
+            src.cmd("ping {} -c 1 &".format(dst))
+            src.cmd("iperf -p 5050 10.0.0.1")
+            src.cmd("iperf -p 5051 -u 10.0.0.1")
             
-            print("%s Downloading index.html from h1" % src)
-            src.cmd("wget http://10.0.0.1/index.html")
-            print("%s Downloading test.zip from h1" % src)
-            src.cmd("wget http://10.0.0.1/test.zip")
+            #print("%s Downloading index.html from h1" % src)
+            #src.cmd("wget http://10.0.0.1/index.html")
+            #print("%s Downloading test.zip from h1" % src)
+            #src.cmd("wget http://10.0.0.1/test.zip")
         
         h1.cmd("rm -f *.* /home/mininet/Downloads")
         

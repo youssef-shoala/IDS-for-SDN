@@ -135,8 +135,8 @@ class SimpleSwitch13(app_manager.RyuApp):
                                         udp_src=udp_metadata.src_port, 
                                         udp_dst=udp_metadata.dst_port)
 
-            else:
-                match = parser.OFPMatch(in_port=in_port, eth_dst=dst, eth_src=src)
+        else:
+            match = parser.OFPMatch(in_port=in_port, eth_dst=dst, eth_src=src)
 
         # verify if we have a valid buffer_id, if yes avoid to send both
         # flow_mod & packet_out

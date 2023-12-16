@@ -131,11 +131,11 @@ def startNetwork():
 
         #send an icmp packet to 10.0.0.3 ever round
         dst = '10.0.0.3'
-        src.cmd("ping {} -c 100 &".format(dst))
+        src.cmd("ping {} -c 1 &".format(dst))
 
         #send tcp and udp to h1
         h1.cmd('iperf -s -p 5050 10.0.0.1')
-        h1.cmd('iperf -s -u -p 5050 10.0.0.1')
+        h1.cmd('iperf -s -u -p 5051 10.0.0.1')
 
     print("--------------------------------------------------------------------------------")  
     

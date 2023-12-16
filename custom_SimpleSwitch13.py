@@ -144,8 +144,8 @@ class SimpleSwitch13(app_manager.RyuApp):
         if msg.buffer_id != ofproto.OFP_NO_BUFFER:
             self.add_flow(datapath, priority, match, actions, msg.buffer_id)
             return
-        else:
-            self.add_flow(datapath, priority, match, actions)
+        #else:
+        #    self.add_flow(datapath, priority, match, actions)
 
         data = None
         if msg.buffer_id == ofproto.OFP_NO_BUFFER:

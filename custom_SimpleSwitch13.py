@@ -100,7 +100,13 @@ class SimpleSwitch13(app_manager.RyuApp):
         self.mac_to_port.setdefault(dpid, {})
 
         #self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
-        out_port = msg.match['out_port']
+        self.mac_to_port[dpid][src] = in_port
+        
+        if dst in self.mac_to_port[dpid]:
+            out_port = self.mac_to_port[dpid][dst]
+        else:
+            out_port = ofproto.OFPP_FLOOD
+
 
         # define OFP actions
         actions = [parser.OFPActionOutput(out_port)]
